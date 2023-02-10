@@ -1,25 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
+import React, { useEffect } from "react"
+import {BrowserRouter, Routes, Route, Link} from "react-router-dom"
+import Home from "./pages/Home"
+import { getCategories, getProduct, getProducts } from "./services/Api"
+import GetImageProduct from "./getImageProduct"
+import Footer from "./component/Footer"
+import Header from "./component/Header"
+import ProductDetails from "./pages/Product-Details"
+import Categories from "./pages/Categories"
+import Search from "./pages/Search"
+import Cart from "./pages/Cart"
+import Slider from "./component/Slider"
+const App = ()=>{
+  const [categories, setCategories] = React.useState([]);
+  useEffect(()=>{
+      getCategories({}).then(({data})=>{
+        return setCategories(data.data.docs);
+      })
+  }, [])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+    <BrowserRouter>
+    <Header item={categories}/>
+    <Slider />
+    <Routes>
+      <Route path="/" element={<Home/>} />
+      <Route path="/productsDetails/:id" element={<ProductDetails item={categories}/>} />
+      <Route path="/Categories/:id" element={<Categories/>} />
+      <Route path="/Search" element ={<Search />}/>
+      <Route path="/Cart" element={<Cart/>}/>
+    </Routes>
+    <Footer />
+    </BrowserRouter>
+    </>
+  )
 }
-
-export default App;
+export default App
